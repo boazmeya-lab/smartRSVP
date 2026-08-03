@@ -44,6 +44,7 @@
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
     }
 
+    /* Bande Motif Afro */
     .afro-sidebar {
       width: 110px;
       background-color: #f8f5f0;
@@ -155,6 +156,60 @@
     .success { color: #6ee7b7; }
     .error { color: #fca5a5; }
 
+    /* Carte du Pass QR Code (Affichée après validation) */
+    .pass-container {
+      text-align: center;
+      padding: 20px;
+      background-color: var(--bg-dark);
+      border: 1px solid var(--gold-accent);
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    .pass-container h3 {
+      color: var(--gold-accent);
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .pass-container p.subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 15px;
+    }
+
+    .qr-box {
+      background: #ffffff;
+      padding: 12px;
+      display: inline-block;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .qr-box img {
+      width: 180px;
+      height: 180px;
+      display: block;
+    }
+
+    .pass-details {
+      text-align: left;
+      background-color: var(--chocolate-card);
+      border: 1px solid var(--border-color);
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .pass-details strong {
+      color: var(--text-muted);
+    }
+
+    .pass-details span {
+      color: var(--text-white);
+    }
+
     @media (max-width: 550px) {
       .card-container {
         flex-direction: column;
@@ -180,13 +235,16 @@
       <div class="pattern-strip"></div>
     </div>
 
-    <!-- Contenu du Formulaire -->
+    <!-- Contenu -->
     <div class="form-content">
+      
+      <!-- ENTÊTE -->
       <div class="header">
         <h1>Confirmation RSVP</h1>
         <p>Veuillez valider votre présence ci-dessous</p>
       </div>
 
+      <!-- FORMULAIRE RSVP -->
       <form id="rsvpForm">
         
         <!-- Nom complet -->
@@ -207,7 +265,7 @@
           <input type="email" id="email" placeholder="Ex: exemple@mail.com">
         </div>
 
-        <!-- PRÉSENCE (Déclencheur) -->
+        <!-- PRÉSENCE -->
         <div class="form-group">
           <label for="presence">Serez-vous présent(e) ? *</label>
           <select id="presence" onchange="togglePresenceFields(this.value)" required>
@@ -216,7 +274,7 @@
           </select>
         </div>
 
-        <!-- SECTION OPTIONS DYNAMIQUES (Masquées si Absent) -->
+        <!-- SECTION OPTIONS (Champs masqués si Absent) -->
         <div id="options_presence">
           
           <!-- Affiliation -->
@@ -249,7 +307,7 @@
             </select>
           </div>
 
-          <!-- Champ Nom Accompagnant -->
+          <!-- Nom Accompagnant -->
           <div class="form-group hidden" id="champ_accompagnant">
             <label for="nom_accompagnant">Nom complet de l'accompagnant(e) *</label>
             <input type="text" id="nom_accompagnant" placeholder="Ex: Marie Kabangu">
@@ -262,31 +320,34 @@
         <div id="statusMsg" class="status-msg"></div>
 
       </form>
+
+      <!-- AFFICHAGE DU PASS + QR CODE (Masqué au début) -->
+      <div id="passSection" class="pass-container hidden">
+        <h3>🎉 Pass d'accès validé !</h3>
+        <p class="subtitle">Veuillez enregistrer ou capturer ce QR Code pour l'entrée.</p>
+
+        <div class="qr-box">
+          <img id="qrCodeImg" src="" alt="QR Code d'accès">
+        </div>
+
+        <div class="pass-details">
+          <p><strong>Invité :</strong> <span id="passNom"></span></p>
+          <p><strong>Table :</strong> <span id="passTable" style="color: var(--gold-accent); font-weight: bold;"></span></p>
+          <p><strong>Code Ticket :</strong> <span id="passTicket"></span></p>
+          <p id="passAccompagnantRow" class="hidden"><strong>Accompagnant :</strong> <span id="passAccompagnant"></span></p>
+        </div>
+      </div>
+
     </div>
 
   </div>
 
   <script>
-    <!-- SECTION CARTE DE PASS (Masquée au départ) -->
-<div id="passSection" class="hidden" style="text-align: center; margin-top: 20px; padding: 20px; background: #120d0a; border: 1px solid var(--gold-accent); border-radius: 12px;">
-  <h3 style="color: var(--gold-accent); margin-bottom: 10px;">🎉 Merci pour votre confirmation !</h3>
-  <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Voici votre Pass d'accès. Présentez ce QR Code à l'entrée.</p>
-  
-  <!-- L'image du QR Code générée dynamiquement -->
-  <img id="qrCodeImg" src="" alt="QR Code Pass" style="width: 180px; height: 180px; border-radius: 8px; background: white; padding: 10px; margin-bottom: 15px;">
-  
-  <div style="font-size: 14px; text-align: left; background: #1c120c; padding: 12px; border-radius: 8px;">
-    <p><strong>Nom :</strong> <span id="passNom"></span></p>
-    <p><strong>Table :</strong> <span id="passTable" style="color: var(--gold-accent);"></span></p>
-    <p><strong>Ticket ID :</strong> <span id="passTicket"></span></p>
-  </div>
-</div>
-    
-    // Récupération automatique du paramètre 'table' depuis l'URL (Ex: ?table=Table 4)
+    // Lecture du paramètre 'table' dans l'URL (Ex: ?table=Table 4)
     const urlParams = new URLSearchParams(window.location.search);
     const tableAttribuee = urlParams.get('table') || 'Non attribuée';
 
-    // Gestion dynamique si Présent / Absent
+    // Masque/Affiche les options selon la présence
     function togglePresenceFields(valeur) {
       const optionsDiv = document.getElementById("options_presence");
       if (valeur === "Non") {
@@ -296,7 +357,7 @@
       }
     }
 
-    // Gestion du champ Accompagnant
+    // Masque/Affiche le champ de l'accompagnant
     function toggleAccompagnant(valeur) {
       const champAccompagnant = document.getElementById("champ_accompagnant");
       const inputNomAccompagnant = document.getElementById("nom_accompagnant");
@@ -319,26 +380,28 @@
       const statusMsg = document.getElementById("statusMsg");
 
       btn.disabled = true;
-      btn.innerText = "Envoi en cours...";
+      btn.innerText = "Traitement en cours...";
       statusMsg.innerText = "";
       statusMsg.className = "status-msg";
 
       const presence = document.getElementById("presence").value;
       const avecAccompagnant = document.getElementById("avec_accompagnant").value;
+      const nomComplet = document.getElementById("nom").value;
+      const nomAccompagnant = document.getElementById("nom_accompagnant").value;
 
-      // Génère un Ticket ID uniquement si la personne vient
+      // Génération automatique d'un Ticket ID unique
       const ticketId = (presence === "Oui") ? ("TICK-" + Math.floor(100000 + Math.random() * 900000)) : "AUCUN";
 
       const payload = {
         ticket_id: ticketId,
-        nom_complet: document.getElementById("nom").value,
+        nom_complet: nomComplet,
         telephone: document.getElementById("telephone").value,
         email: document.getElementById("email").value,
         presence: presence,
         affiliation: (presence === "Oui") ? document.getElementById("affiliation").value : "N/A",
         boisson: (presence === "Oui") ? document.getElementById("boisson").value : "N/A",
         avec_accompagnant: (presence === "Oui") ? avecAccompagnant : "non",
-        nom_accompagnant: (presence === "Oui" && avecAccompagnant === "oui") ? document.getElementById("nom_accompagnant").value : "",
+        nom_accompagnant: (presence === "Oui" && avecAccompagnant === "oui") ? nomAccompagnant : "",
         table: (presence === "Oui") ? tableAttribuee : "N/A",
         date_soumission: new Date().toISOString()
       };
@@ -351,19 +414,37 @@
         });
 
         if (response.ok) {
-          statusMsg.innerText = (presence === "Oui") 
-            ? "✅ Confirmation enregistrée avec succès !" 
-            : "📩 Merci ! Votre réponse a bien été prise en compte.";
-          statusMsg.classList.add("success");
-          document.getElementById("rsvpForm").reset();
-          togglePresenceFields("Oui");
+          if (presence === "Oui") {
+            // Cacher le formulaire
+            document.getElementById("rsvpForm").style.display = "none";
+
+            // Remplir les données de la carte Pass
+            document.getElementById("passNom").innerText = nomComplet;
+            document.getElementById("passTable").innerText = tableAttribuee;
+            document.getElementById("passTicket").innerText = ticketId;
+
+            if (avecAccompagnant === "oui" && nomAccompagnant) {
+              document.getElementById("passAccompagnant").innerText = nomAccompagnant;
+              document.getElementById("passAccompagnantRow").classList.remove("hidden");
+            }
+
+            // Générer le QR Code instantanément à l'écran
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${ticketId}`;
+            document.getElementById("qrCodeImg").src = qrUrl;
+
+            // Afficher le bloc du Pass
+            document.getElementById("passSection").classList.remove("hidden");
+          } else {
+            statusMsg.innerText = "📩 Merci ! Votre réponse (Absent) a bien été enregistrée.";
+            statusMsg.classList.add("success");
+            document.getElementById("rsvpForm").reset();
+          }
         } else {
           throw new Error("Erreur serveur lors de l'envoi");
         }
       } catch (error) {
         statusMsg.innerText = "❌ Une erreur s'est produite. Veuillez réessayer.";
         statusMsg.classList.add("error");
-      } finally {
         btn.disabled = false;
         btn.innerText = "Confirmer";
       }
