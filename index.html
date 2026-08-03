@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSVP - Smartevent</title>
+  
+  <!-- Librairie ultra-légère pour générer le QR Code directement sur le navigateur -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --bg: #F3F4F6;
+      --card-bg: #FFFFFF;
+      --text: #1F2937;
+      --text-light: #6B7280;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 450px;
+      padding: 28px 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+
+    .header { text-align: center; margin-bottom: 24px; }
+    .header h1 { margin: 0 0 8px 0; font-size: 1.5rem; color: var(--text); }
+    .header p { margin: 0; color: var(--text-light); font-size: 0.95rem; }
+
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; color: #374151; }
+    
+    input[type="text"], input[type="tel"], input[type="email"], select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #D1D5DB;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .radio-group { display: flex; gap: 12px; }
+    .radio-option {
+      flex: 1;
+      border: 1px solid #D1D5DB;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .radio-option input { display: none; }
+    .radio-option.active {
+      border-color: var(--primary);
+      background-color: #EEF2FF;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    button.btn-submit {
+      width: 100%;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background-color 0.2s;
+    }
+    button.btn-submit:hover { background-color: var(--primary-hover); }
+
+    /* Style de la carte d'accès Pass QR Code */
+    #pass-container {
+      display: none;
+      text-align: center;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .pass-card {
+      background: #F9FAFB;
+      border: 2px dashed #D1D5DB;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+
+    #qrcode {
+      display: flex;
+      justify-content: center;
+      margin: 16px 0;
+    }
+    #qrcode img {
+      border-radius: 8px;
+      padding: 8px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .ticket-id {
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+
+    .notice {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-top: 12px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- FORMULAIRE RSVP -->
+  <div id="rsvp-section">
+    <div class="header">
+      <h1>Confirmation de présence</h1>
+      <p>Merci de remplir ce formulaire pour valider votre accès.</p>
+    </div>
+
+    <form id="rsvp-form" onsubmit="soumettreRSVP(event)">
+      <div class="form-group">
+        <label>Serez-vous présent(e) ?</label>
+        <div class="radio-group">
+          <label class="radio-option active" id="label-oui">
+            <input type="radio" name="presence" value="true" checked onclick="togglePresence(true)"> Oui 🎉
+          </label>
+          <label class="radio-option" id="label-non">
+            <input type="radio" name="presence" value="false" onclick="togglePresence(false)"> Non ❌
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="nom">Nom complet</label>
+        <input type="text" id="nom" required placeholder="ex: Jean Dupont">
+      </div>
+
+      <div class="form-group">
+        <label for="telephone">Numéro WhatsApp / Téléphone</label>
+        <input type="tel" id="telephone" required placeholder="ex: +243 810 000 000">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Adresse e-mail</label>
+        <input type="email" id="email" required placeholder="ex: jean@gmail.com">
+      </div>
+
+      <!-- Options affichées uniquement si présent -->
+      <div id="options-presence">
+        <div class="form-group">
+          <label for="affiliation">Vous êtes de la part de :</label>
+          <select id="affiliation">
+            <option value="Famille du marié">Famille du marié</option>
+            <option value="Famille de la mariée">Famille de la mariée</option>
+            <option value="Ami(e)">Ami(e)</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="boisson">Choix de la boisson souhaitée :</label>
+          <select id="boisson">
+            <option value="Fanta">Fanta</option>
+            <option value="Coca-Cola">Coca-Cola</option>
+            <option value="Pepsi">Pepsi</option>
+            <option value="Eau / Jus">Eau / Jus</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btn-submit">Valider ma réponse</button>
+    </form>
+  </div>
+
+  <!-- BILLETS / PASS GÉNÉRÉ (Caché par défaut) -->
+  <div id="pass-container">
+    <div class="header">
+      <h1 id="pass-title">Votre Pass d'Accès</h1>
+      <p id="pass-subtitle">Présentez ce QR Code à l'entrée de l'événement.</p>
+    </div>
+
+    <div class="pass-card">
+      <div id="guest-name" style="font-weight: bold; font-size: 1.2rem;"></div>
+      <div class="ticket-id" id="ticket-id-display"></div>
+      
+      <!-- Zone d'affichage du QR Code -->
+      <div id="qrcode"></div>
+
+      <p class="notice">💡 <strong>Conseil :</strong> Faites une capture d'écran de ce pass pour l'avoir avec vous le jour J.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // 🔗 REMPLACE CETTE URL PAR TON WEBHOOK N8N (Nœud Webhook POST)
+  const N8N_WEBHOOK_URL = "https://ton-n8n-vps.com/webhook/rsvp-submit";
+
+  // Gestion de l'affichage UI selon Présent / Absent
+  function togglePresence(estPresent) {
+    const optionsDiv = document.getElementById("options-presence");
+    const labelOui = document.getElementById("label-oui");
+    const labelNon = document.getElementById("label-non");
+
+    if (estPresent) {
+      optionsDiv.style.display = "block";
+      labelOui.classList.add("active");
+      labelNon.classList.remove("active");
+    } else {
+      optionsDiv.style.display = "none";
+      labelOui.classList.remove("active");
+      labelNon.classList.add("active");
+    }
+  }
+
+  // Fonction principale lors de la soumission
+  async function soumettreRSVP(event) {
+    event.preventDefault();
+
+    const btnSubmit = document.getElementById("btn-submit");
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = "Traitement en cours...";
+
+    // 1. Récupération des données du formulaire
+    const isPresent = document.querySelector('input[name="presence"]:checked').value === "true";
+    const nomComplet = document.getElementById("nom").value.trim();
+    const telephone = document.getElementById("telephone").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const affiliation = isPresent ? document.getElementById("affiliation").value : "N/A";
+    const boisson = isPresent ? document.getElementById("boisson").value : "N/A";
+
+    // 2. Génération d'un ID de Billet Unique (ex: SMART-8F3A)
+    const ticketID = "SMART-" + Math.random().toString(36).substring(2, 6).toUpperCase() + Date.now().toString().slice(-4);
+
+    const payload = {
+      ticket_id: ticketID,
+      nom_complet: nomComplet,
+      telephone: telephone,
+      email: email,
+      presence: isPresent,
+      affiliation: affiliation,
+      boisson: boisson,
+      date_soumission: new Date().toISOString()
+    };
+
+    try {
+      // 3. Envoi asynchrone des données vers n8n
+      fetch(N8N_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      // 4. Masquer le formulaire
+      document.getElementById("rsvp-section").style.display = "none";
+      const passContainer = document.getElementById("pass-container");
+      passContainer.style.display = "block";
+
+      if (isPresent) {
+        // Affichage du Pass avec QR code
+        document.getElementById("guest-name").textContent = nomComplet;
+        document.getElementById("ticket-id-display").textContent = ticketID;
+
+        // Génération instantanée du QR Code côté client
+        new QRCode(document.getElementById("qrcode"), {
+          text: `https://smartevent.live/checkin?ticket=${ticketID}`,
+          width: 180,
+          height: 180,
+          colorDark : "#1F2937",
+          colorLight : "#FFFFFF",
+          correctLevel : QRCode.CorrectLevel.H
+        });
+      } else {
+        // Message si l'invité a répondu "Non"
+        document.getElementById("pass-title").textContent = "Merci pour votre réponse";
+        document.getElementById("pass-subtitle").textContent = "Nous avons bien pris note de votre absence.";
+        document.querySelector(".pass-card").innerHTML = `<p>Nous sommes désolés que vous ne puissiez pas être des nôtres, <strong>${nomComplet}</strong>.</p>`;
+      }
+
+    } catch (error) {
+      console.error("Erreur d'envoi :", error);
+      alert("Une erreur est survenue lors de l'envoi. Veuillez réessayer.");
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = "Valider ma réponse";
+    }
+  }
+</script>
+
+</body>
+</html>
