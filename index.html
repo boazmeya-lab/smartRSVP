@@ -7,7 +7,6 @@
   <style>
     :root {
       --bg-dark: #120d0a;
-      --chocolate-main: #2b1a13;
       --chocolate-card: #1c120c;
       --chocolate-accent: #5c3b28;
       --gold-accent: #d4a359;
@@ -34,7 +33,6 @@
       padding: 20px;
     }
 
-    /* Carte principale */
     .card-container {
       background-color: var(--chocolate-card);
       border: 1px solid var(--border-color);
@@ -46,10 +44,9 @@
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
     }
 
-    /* BANDE MOTIFS AFRO (À GAUCHE) */
     .afro-sidebar {
       width: 110px;
-      background-color: #f8f5f0; /* Fond clair pour contraster le motif */
+      background-color: #f8f5f0;
       position: relative;
       display: flex;
       flex-direction: column;
@@ -59,21 +56,19 @@
       border-right: 2px solid var(--gold-accent);
     }
 
-    /* Motif Géométrique répété façon Kuba/Bogolan */
     .pattern-strip {
       width: 100%;
       height: 100%;
       background-size: 50px 50px;
       background-image: 
-        linear-gradient(135deg, var(--chocolate-main) 25%, transparent 25%),
-        linear-gradient(225deg, var(--chocolate-main) 25%, transparent 25%),
-        linear-gradient(45deg, var(--chocolate-main) 25%, transparent 25%),
-        linear-gradient(315deg, var(--chocolate-main) 25%, transparent 25%);
+        linear-gradient(135deg, #2b1a13 25%, transparent 25%),
+        linear-gradient(225deg, #2b1a13 25%, transparent 25%),
+        linear-gradient(45deg, #2b1a13 25%, transparent 25%),
+        linear-gradient(315deg, #2b1a13 25%, transparent 25%);
       background-position: 25px 0, 25px 0, 0 0, 0 0;
       opacity: 0.9;
     }
 
-    /* CONTENU FORMULAIRE (À DROITE) */
     .form-content {
       padding: 30px;
       flex-grow: 1;
@@ -120,16 +115,15 @@
       color: var(--text-white);
       font-size: 14px;
       outline: none;
-      transition: border-color 0.3s, box-shadow 0.3s;
+      transition: border-color 0.3s;
     }
 
     input:focus, select:focus {
       border-color: var(--gold-accent);
-      box-shadow: 0 0 5px rgba(212, 163, 89, 0.3);
     }
 
     .hidden {
-      display: none;
+      display: none !important;
     }
 
     .btn-submit {
@@ -145,15 +139,11 @@
       margin-top: 10px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      transition: background-color 0.3s, transform 0.1s;
+      transition: background-color 0.3s;
     }
 
     .btn-submit:hover {
       background-color: var(--gold-hover);
-    }
-
-    .btn-submit:active {
-      transform: scale(0.99);
     }
 
     .status-msg {
@@ -165,7 +155,6 @@
     .success { color: #6ee7b7; }
     .error { color: #fca5a5; }
 
-    /* Responsive mobile */
     @media (max-width: 550px) {
       .card-container {
         flex-direction: column;
@@ -186,12 +175,12 @@
 
   <div class="card-container">
     
-    <!-- Bande de motifs sur le côté -->
+    <!-- Motif Afro latéral -->
     <div class="afro-sidebar">
       <div class="pattern-strip"></div>
     </div>
 
-    <!-- Formulaire RSVP -->
+    <!-- Contenu du Formulaire -->
     <div class="form-content">
       <div class="header">
         <h1>Confirmation RSVP</h1>
@@ -218,52 +207,57 @@
           <input type="email" id="email" placeholder="Ex: exemple@mail.com">
         </div>
 
-        <!-- Présence -->
+        <!-- PRÉSENCE (Déclencheur) -->
         <div class="form-group">
           <label for="presence">Serez-vous présent(e) ? *</label>
-          <select id="presence" required>
+          <select id="presence" onchange="togglePresenceFields(this.value)" required>
             <option value="Oui">Oui, je serai présent(e)</option>
             <option value="Non">Non, je ne pourrai pas</option>
           </select>
         </div>
 
-        <!-- Affiliation -->
-        <div class="form-group">
-          <label for="affiliation">Vous êtes du côté de : *</label>
-          <select id="affiliation" required>
-            <option value="Famille du marié">Famille du Marié</option>
-            <option value="Famille de la mariée">Famille de la Mariée</option>
-            <option value="Amis">Amis / Invités</option>
-          </select>
+        <!-- SECTION OPTIONS DYNAMIQUES (Masquées si Absent) -->
+        <div id="options_presence">
+          
+          <!-- Affiliation -->
+          <div class="form-group">
+            <label for="affiliation">Vous êtes du côté de : *</label>
+            <select id="affiliation">
+              <option value="Famille du marié">Famille du Marié</option>
+              <option value="Famille de la mariée">Famille de la Mariée</option>
+              <option value="Amis">Amis / Invités</option>
+            </select>
+          </div>
+
+          <!-- Boisson -->
+          <div class="form-group">
+            <label for="boisson">Préférence de Boisson *</label>
+            <select id="boisson">
+              <option value="Sucré / Jus">Sucré / Jus</option>
+              <option value="Bière">Bière</option>
+              <option value="Vin / Champagne">Vin / Champagne</option>
+              <option value="Eau Minérale">Eau Minérale</option>
+            </select>
+          </div>
+
+          <!-- Option Accompagnant -->
+          <div class="form-group">
+            <label for="avec_accompagnant">Venez-vous accompagné(e) ? *</label>
+            <select id="avec_accompagnant" onchange="toggleAccompagnant(this.value)">
+              <option value="non">Non, je viens seul(e)</option>
+              <option value="oui">Oui, je viens avec un(e) accompagnant(e)</option>
+            </select>
+          </div>
+
+          <!-- Champ Nom Accompagnant -->
+          <div class="form-group hidden" id="champ_accompagnant">
+            <label for="nom_accompagnant">Nom complet de l'accompagnant(e) *</label>
+            <input type="text" id="nom_accompagnant" placeholder="Ex: Marie Kabangu">
+          </div>
+
         </div>
 
-        <!-- Boisson -->
-        <div class="form-group">
-          <label for="boisson">Préférence de Boisson *</label>
-          <select id="boisson" required>
-            <option value="Sucré / Jus">Sucré / Jus</option>
-            <option value="Bière">Bière</option>
-            <option value="Vin / Champagne">Vin / Champagne</option>
-            <option value="Eau Minérale">Eau Minérale</option>
-          </select>
-        </div>
-
-        <!-- Option Accompagnant -->
-        <div class="form-group">
-          <label for="avec_accompagnant">Venez-vous accompagné(e) ? *</label>
-          <select id="avec_accompagnant" onchange="toggleAccompagnant(this.value)" required>
-            <option value="non">Non, je viens seul(e)</option>
-            <option value="oui">Oui, je viens avec un(e) accompagnant(e)</option>
-          </select>
-        </div>
-
-        <!-- Champ dynamique Nom Accompagnant -->
-        <div class="form-group hidden" id="champ_accompagnant">
-          <label for="nom_accompagnant">Nom complet de l'accompagnant(e) *</label>
-          <input type="text" id="nom_accompagnant" placeholder="Ex: Marie Kabangu">
-        </div>
-
-        <button type="submit" class="btn-submit" id="btnSubmit">Confirmer ma présence</button>
+        <button type="submit" class="btn-submit" id="btnSubmit">Confirmer</button>
 
         <div id="statusMsg" class="status-msg"></div>
 
@@ -273,6 +267,21 @@
   </div>
 
   <script>
+    // Récupération automatique du paramètre 'table' depuis l'URL (Ex: ?table=Table 4)
+    const urlParams = new URLSearchParams(window.location.search);
+    const tableAttribuee = urlParams.get('table') || 'Non attribuée';
+
+    // Gestion dynamique si Présent / Absent
+    function togglePresenceFields(valeur) {
+      const optionsDiv = document.getElementById("options_presence");
+      if (valeur === "Non") {
+        optionsDiv.classList.add("hidden");
+      } else {
+        optionsDiv.classList.remove("hidden");
+      }
+    }
+
+    // Gestion du champ Accompagnant
     function toggleAccompagnant(valeur) {
       const champAccompagnant = document.getElementById("champ_accompagnant");
       const inputNomAccompagnant = document.getElementById("nom_accompagnant");
@@ -287,6 +296,7 @@
       }
     }
 
+    // Soumission du Formulaire
     document.getElementById("rsvpForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
@@ -298,36 +308,40 @@
       statusMsg.innerText = "";
       statusMsg.className = "status-msg";
 
-      const ticketId = "TICK-" + Math.floor(100000 + Math.random() * 900000);
+      const presence = document.getElementById("presence").value;
       const avecAccompagnant = document.getElementById("avec_accompagnant").value;
+
+      // Génère un Ticket ID uniquement si la personne vient
+      const ticketId = (presence === "Oui") ? ("TICK-" + Math.floor(100000 + Math.random() * 900000)) : "AUCUN";
 
       const payload = {
         ticket_id: ticketId,
         nom_complet: document.getElementById("nom").value,
         telephone: document.getElementById("telephone").value,
         email: document.getElementById("email").value,
-        presence: document.getElementById("presence").value,
-        affiliation: document.getElementById("affiliation").value,
-        boisson: document.getElementById("boisson").value,
-        avec_accompagnant: avecAccompagnant,
-        nom_accompagnant: avecAccompagnant === "oui" ? document.getElementById("nom_accompagnant").value : "",
+        presence: presence,
+        affiliation: (presence === "Oui") ? document.getElementById("affiliation").value : "N/A",
+        boisson: (presence === "Oui") ? document.getElementById("boisson").value : "N/A",
+        avec_accompagnant: (presence === "Oui") ? avecAccompagnant : "non",
+        nom_accompagnant: (presence === "Oui" && avecAccompagnant === "oui") ? document.getElementById("nom_accompagnant").value : "",
+        table: (presence === "Oui") ? tableAttribuee : "N/A",
         date_soumission: new Date().toISOString()
       };
 
       try {
         const response = await fetch("https://n8n-rirk.srv1828754.hstgr.cloud/webhook-test/6c9b0d4e-1af4-4efa-8c69-1c8dd7f6f94b", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
 
         if (response.ok) {
-          statusMsg.innerText = "✅ Confirmation enregistrée avec succès !";
+          statusMsg.innerText = (presence === "Oui") 
+            ? "✅ Confirmation enregistrée avec succès !" 
+            : "📩 Merci ! Votre réponse a bien été prise en compte.";
           statusMsg.classList.add("success");
           document.getElementById("rsvpForm").reset();
-          toggleAccompagnant("non");
+          togglePresenceFields("Oui");
         } else {
           throw new Error("Erreur serveur lors de l'envoi");
         }
@@ -336,7 +350,7 @@
         statusMsg.classList.add("error");
       } finally {
         btn.disabled = false;
-        btn.innerText = "Confirmer ma présence";
+        btn.innerText = "Confirmer";
       }
     });
   </script>
