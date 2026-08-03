@@ -1,3 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSVP - Smartevent</title>
+  <style>
+    :root {
+      --bg-dark: #120d0a;
+      --chocolate-card: #1c120c;
+      --chocolate-accent: #5c3b28;
+      --gold-accent: #d4a359;
+      --gold-hover: #b8863d;
+      --text-white: #f8f5f0;
+      --text-muted: #a39589;
+      --border-color: #3d2b20;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card-container {
+      background-color: var(--chocolate-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Bande Motif Afro */
+    .afro-sidebar {
+      width: 110px;
+      background-color: #f8f5f0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border-right: 2px solid var(--gold-accent);
+    }
+
+    .pattern-strip {
+      width: 100%;
+      height: 100%;
+      background-size: 50px 50px;
+      background-image: 
+        linear-gradient(135deg, #2b1a13 25%, transparent 25%),
+        linear-gradient(225deg, #2b1a13 25%, transparent 25%),
+        linear-gradient(45deg, #2b1a13 25%, transparent 25%),
+        linear-gradient(315deg, #2b1a13 25%, transparent 25%);
+      background-position: 25px 0, 25px 0, 0 0, 0 0;
+      opacity: 0.9;
+    }
+
+    .form-content {
+      padding: 30px;
+      flex-grow: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      color: var(--gold-accent);
+      font-size: 22px;
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 11px 13px;
+      background-color: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-white);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--gold-accent);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      background-color: var(--gold-accent);
+      color: #1a0f0a;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: background-color 0.3s;
+    }
+
+    .btn-submit:hover {
+      background-color: var(--gold-hover);
+    }
+
+    .status-msg {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .success { color: #6ee7b7; }
+    .error { color: #fca5a5; }
+
+    /* Carte du Pass QR Code (Affichée après validation) */
+    .pass-container {
+      text-align: center;
+      padding: 20px;
+      background-color: var(--bg-dark);
+      border: 1px solid var(--gold-accent);
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    .pass-container h3 {
+      color: var(--gold-accent);
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .pass-container p.subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 15px;
+    }
+
+    .qr-box {
+      background: #ffffff;
+      padding: 12px;
+      display: inline-block;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .qr-box img {
+      width: 180px;
+      height: 180px;
+      display: block;
+    }
+
+    .pass-details {
+      text-align: left;
+      background-color: var(--chocolate-card);
+      border: 1px solid var(--border-color);
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .pass-details strong {
+      color: var(--text-muted);
+    }
+
+    .pass-details span {
+      color: var(--text-white);
+    }
+
+    @media (max-width: 550px) {
+      .card-container {
+        flex-direction: column;
+      }
+      .afro-sidebar {
+        width: 100%;
+        height: 40px;
+        border-right: none;
+        border-bottom: 2px solid var(--gold-accent);
+      }
+      .pattern-strip {
+        background-size: 30px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card-container">
+    
+    <!-- Motif Afro latéral -->
+    <div class="afro-sidebar">
+      <div class="pattern-strip"></div>
+    </div>
+
+    <!-- Contenu -->
+    <div class="form-content">
+      
+      <!-- ENTÊTE -->
+      <div class="header">
+        <h1>Confirmation RSVP</h1>
+        <p>Veuillez valider votre présence ci-dessous</p>
+      </div>
+
+      <!-- FORMULAIRE RSVP -->
+      <form id="rsvpForm">
+        
+        <!-- Nom complet -->
+        <div class="form-group">
+          <label for="nom">Nom Complet *</label>
+          <input type="text" id="nom" placeholder="Ex: Jean Kabangu" required>
+        </div>
+
+        <!-- Téléphone -->
+        <div class="form-group">
+          <label for="telephone">Numéro WhatsApp / Téléphone *</label>
+          <input type="tel" id="telephone" placeholder="Ex: +243..." required>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Adresse Email</label>
+          <input type="email" id="email" placeholder="Ex: exemple@mail.com">
+        </div>
+
+        <!-- PRÉSENCE -->
+        <div class="form-group">
+          <label for="presence">Serez-vous présent(e) ? *</label>
+          <select id="presence" onchange="togglePresenceFields(this.value)" required>
+            <option value="Oui">Oui, je serai présent(e)</option>
+            <option value="Non">Non, je ne pourrai pas</option>
+          </select>
+        </div>
+
+        <!-- SECTION OPTIONS (Champs masqués si Absent) -->
+        <div id="options_presence">
+          
+          <!-- Affiliation -->
+          <div class="form-group">
+            <label for="affiliation">Vous êtes du côté de : *</label>
+            <select id="affiliation">
+              <option value="Famille du marié">Famille du Marié</option>
+              <option value="Famille de la mariée">Famille de la Mariée</option>
+              <option value="Amis">Amis / Invités</option>
+            </select>
+          </div>
+
+          <!-- Boisson -->
+          <div class="form-group">
+            <label for="boisson">Préférence de Boisson *</label>
+            <select id="boisson">
+              <option value="Sucré / Jus">Sucré / Jus</option>
+              <option value="Bière">Bière</option>
+              <option value="Vin / Champagne">Vin / Champagne</option>
+              <option value="Eau Minérale">Eau Minérale</option>
+            </select>
+          </div>
+
+          <!-- Option Accompagnant -->
+          <div class="form-group">
+            <label for="avec_accompagnant">Venez-vous accompagné(e) ? *</label>
+            <select id="avec_accompagnant" onchange="toggleAccompagnant(this.value)">
+              <option value="non">Non, je viens seul(e)</option>
+              <option value="oui">Oui, je viens avec un(e) accompagnant(e)</option>
+            </select>
+          </div>
+
+          <!-- Nom Accompagnant -->
+          <div class="form-group hidden" id="champ_accompagnant">
+            <label for="nom_accompagnant">Nom complet de l'accompagnant(e) *</label>
+            <input type="text" id="nom_accompagnant" placeholder="Ex: Marie Kabangu">
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn-submit" id="btnSubmit">Confirmer</button>
+
+        <div id="statusMsg" class="status-msg"></div>
+
+      </form>
+
+      <!-- AFFICHAGE DU PASS + QR CODE (Masqué au début) -->
+      <div id="passSection" class="pass-container hidden">
+        <h3>🎉 Pass d'accès validé !</h3>
+        <p class="subtitle">Veuillez enregistrer ou capturer ce QR Code pour l'entrée.</p>
+
+        <div class="qr-box">
+          <img id="qrCodeImg" src="" alt="QR Code d'accès">
+        </div>
+
+        <div class="pass-details">
+          <p><strong>Invité :</strong> <span id="passNom"></span></p>
+          <p><strong>Table :</strong> <span id="passTable" style="color: var(--gold-accent); font-weight: bold;"></span></p>
+          <p><strong>Code Ticket :</strong> <span id="passTicket"></span></p>
+          <p id="passAccompagnantRow" class="hidden"><strong>Accompagnant :</strong> <span id="passAccompagnant"></span></p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
   <script>
     // Lecture du paramètre 'table' dans l'URL (Ex: ?table=Table 4)
     const urlParams = new URLSearchParams(window.location.search);
@@ -6,7 +350,6 @@
     // Masque/Affiche les options selon la présence
     function togglePresenceFields(valeur) {
       const optionsDiv = document.getElementById("options_presence");
-      // Vérification souple (si la valeur contient "Non")
       if (valeur.toLowerCase().includes("non")) {
         optionsDiv.classList.add("hidden");
       } else {
@@ -43,7 +386,7 @@
 
       const presenceRaw = document.getElementById("presence").value;
       
-      // Sécurité : On vérifie si la valeur contient "Oui" ou "présent"
+      // Sécurité : Vérifie si la valeur contient "oui" ou "présent"
       const estPresent = presenceRaw.toLowerCase().includes("oui") || presenceRaw.toLowerCase().includes("présent");
       const presenceFormatted = estPresent ? "Oui" : "Non";
 
@@ -114,3 +457,6 @@
       }
     });
   </script>
+
+</body>
+</html>
