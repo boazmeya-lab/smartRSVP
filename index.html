@@ -267,6 +267,21 @@
   </div>
 
   <script>
+    <!-- SECTION CARTE DE PASS (Masquée au départ) -->
+<div id="passSection" class="hidden" style="text-align: center; margin-top: 20px; padding: 20px; background: #120d0a; border: 1px solid var(--gold-accent); border-radius: 12px;">
+  <h3 style="color: var(--gold-accent); margin-bottom: 10px;">🎉 Merci pour votre confirmation !</h3>
+  <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Voici votre Pass d'accès. Présentez ce QR Code à l'entrée.</p>
+  
+  <!-- L'image du QR Code générée dynamiquement -->
+  <img id="qrCodeImg" src="" alt="QR Code Pass" style="width: 180px; height: 180px; border-radius: 8px; background: white; padding: 10px; margin-bottom: 15px;">
+  
+  <div style="font-size: 14px; text-align: left; background: #1c120c; padding: 12px; border-radius: 8px;">
+    <p><strong>Nom :</strong> <span id="passNom"></span></p>
+    <p><strong>Table :</strong> <span id="passTable" style="color: var(--gold-accent);"></span></p>
+    <p><strong>Ticket ID :</strong> <span id="passTicket"></span></p>
+  </div>
+</div>
+    
     // Récupération automatique du paramètre 'table' depuis l'URL (Ex: ?table=Table 4)
     const urlParams = new URLSearchParams(window.location.search);
     const tableAttribuee = urlParams.get('table') || 'Non attribuée';
