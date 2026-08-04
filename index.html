@@ -6,14 +6,15 @@
   <title>RSVP - Smartevent</title>
   <style>
     :root {
-      --bg-dark: #120d0a;
-      --chocolate-card: #1c120c;
-      --chocolate-accent: #5c3b28;
-      --gold-accent: #d4a359;
-      --gold-hover: #b8863d;
-      --text-white: #f8f5f0;
-      --text-muted: #a39589;
-      --border-color: #3d2b20;
+      --bg-card: #ffffff;
+      --navy-accent: #1F3A5F;
+      --navy-hover: #142742;
+      --gold-accent: #D4AF37;
+      --gold-hover: #b89628;
+      --text-main: #222222;
+      --text-muted: #666666;
+      --border-color: #e0e0e0;
+      --input-bg: #f9f9f9;
     }
 
     * {
@@ -24,8 +25,10 @@
     }
 
     body {
-      background-color: var(--bg-dark);
-      color: var(--text-white);
+      /* Photo de mariage en arrière-plan avec voile sombre pour faire ressortir la carte */
+      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), 
+                  url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+      color: var(--text-main);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -34,20 +37,20 @@
     }
 
     .card-container {
-      background-color: var(--chocolate-card);
+      background-color: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: 16px;
       width: 100%;
       max-width: 680px;
       display: flex;
       overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
     }
 
     /* Bande Motif Afro */
     .afro-sidebar {
       width: 110px;
-      background-color: #f8f5f0;
+      background-color: #1a1a1a;
       position: relative;
       display: flex;
       flex-direction: column;
@@ -62,12 +65,12 @@
       height: 100%;
       background-size: 50px 50px;
       background-image: 
-        linear-gradient(135deg, #2b1a13 25%, transparent 25%),
-        linear-gradient(225deg, #2b1a13 25%, transparent 25%),
-        linear-gradient(45deg, #2b1a13 25%, transparent 25%),
-        linear-gradient(315deg, #2b1a13 25%, transparent 25%);
+        linear-gradient(135deg, var(--gold-accent) 25%, transparent 25%),
+        linear-gradient(225deg, var(--gold-accent) 25%, transparent 25%),
+        linear-gradient(45deg, var(--gold-accent) 25%, transparent 25%),
+        linear-gradient(315deg, var(--gold-accent) 25%, transparent 25%);
       background-position: 25px 0, 25px 0, 0 0, 0 0;
-      opacity: 0.9;
+      opacity: 0.85;
     }
 
     .form-content {
@@ -81,11 +84,12 @@
     }
 
     .header h1 {
-      color: var(--gold-accent);
+      color: var(--navy-accent);
       font-size: 22px;
       letter-spacing: 1.5px;
       margin-bottom: 6px;
       text-transform: uppercase;
+      font-weight: 700;
     }
 
     .header p {
@@ -110,17 +114,18 @@
     input, select {
       width: 100%;
       padding: 11px 13px;
-      background-color: var(--bg-dark);
+      background-color: var(--input-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      color: var(--text-white);
+      color: var(--text-main);
       font-size: 14px;
       outline: none;
-      transition: border-color 0.3s;
+      transition: border-color 0.3s, box-shadow 0.3s;
     }
 
     input:focus, select:focus {
       border-color: var(--gold-accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
     }
 
     .hidden {
@@ -130,8 +135,8 @@
     .btn-submit {
       width: 100%;
       padding: 13px;
-      background-color: var(--gold-accent);
-      color: #1a0f0a;
+      background-color: var(--navy-accent);
+      color: #ffffff;
       font-weight: bold;
       border: none;
       border-radius: 8px;
@@ -144,30 +149,31 @@
     }
 
     .btn-submit:hover {
-      background-color: var(--gold-hover);
+      background-color: var(--navy-hover);
     }
 
     .status-msg {
       margin-top: 15px;
       text-align: center;
       font-size: 13px;
+      font-weight: 600;
     }
 
-    .success { color: #6ee7b7; }
-    .error { color: #fca5a5; }
+    .success { color: #15803d; }
+    .error { color: #b91c1c; }
 
-    /* Carte du Pass QR Code (Affichée après validation) */
+    /* Carte du Pass QR Code */
     .pass-container {
       text-align: center;
       padding: 20px;
-      background-color: var(--bg-dark);
+      background-color: #fcfbf7;
       border: 1px solid var(--gold-accent);
       border-radius: 12px;
       margin-top: 10px;
     }
 
     .pass-container h3 {
-      color: var(--gold-accent);
+      color: var(--navy-accent);
       margin-bottom: 8px;
       font-size: 18px;
     }
@@ -183,6 +189,7 @@
       padding: 12px;
       display: inline-block;
       border-radius: 10px;
+      border: 1px solid var(--border-color);
       margin-bottom: 15px;
     }
 
@@ -194,7 +201,7 @@
 
     .pass-details {
       text-align: left;
-      background-color: var(--chocolate-card);
+      background-color: #ffffff;
       border: 1px solid var(--border-color);
       padding: 14px;
       border-radius: 8px;
@@ -207,7 +214,7 @@
     }
 
     .pass-details span {
-      color: var(--text-white);
+      color: var(--text-main);
     }
 
     @media (max-width: 550px) {
@@ -343,11 +350,9 @@
   </div>
 
   <script>
-    // Lecture du paramètre 'table' dans l'URL (Ex: ?table=Table 4)
     const urlParams = new URLSearchParams(window.location.search);
     const tableAttribuee = urlParams.get('table') || 'Non attribuée';
 
-    // Masque/Affiche les options selon la présence
     function togglePresenceFields(valeur) {
       const optionsDiv = document.getElementById("options_presence");
       if (valeur.toLowerCase().includes("non")) {
@@ -357,7 +362,6 @@
       }
     }
 
-    // Masque/Affiche le champ de l'accompagnant
     function toggleAccompagnant(valeur) {
       const champAccompagnant = document.getElementById("champ_accompagnant");
       const inputNomAccompagnant = document.getElementById("nom_accompagnant");
@@ -372,7 +376,6 @@
       }
     }
 
-    // Soumission du Formulaire
     document.getElementById("rsvpForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
@@ -385,8 +388,6 @@
       statusMsg.className = "status-msg";
 
       const presenceRaw = document.getElementById("presence").value;
-      
-      // Sécurité : Vérifie si la valeur contient "oui" ou "présent"
       const estPresent = presenceRaw.toLowerCase().includes("oui") || presenceRaw.toLowerCase().includes("présent");
       const presenceFormatted = estPresent ? "Oui" : "Non";
 
@@ -394,7 +395,6 @@
       const nomComplet = document.getElementById("nom").value;
       const nomAccompagnant = document.getElementById("nom_accompagnant").value;
 
-      // Génération automatique d'un Ticket ID unique
       const ticketId = estPresent ? ("TICK-" + Math.floor(100000 + Math.random() * 900000)) : "AUCUN";
 
       const payload = {
@@ -420,10 +420,8 @@
 
         if (response.ok) {
           if (estPresent) {
-            // Cacher le formulaire
             document.getElementById("rsvpForm").style.display = "none";
 
-            // Remplir les données de la carte Pass
             document.getElementById("passNom").innerText = nomComplet;
             document.getElementById("passTable").innerText = tableAttribuee;
             document.getElementById("passTicket").innerText = ticketId;
@@ -433,11 +431,9 @@
               document.getElementById("passAccompagnantRow").classList.remove("hidden");
             }
 
-            // Générer le QR Code instantanément à l'écran
             const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${ticketId}`;
             document.getElementById("qrCodeImg").src = qrUrl;
 
-            // Afficher le bloc du Pass
             document.getElementById("passSection").classList.remove("hidden");
           } else {
             statusMsg.innerText = "📩 Merci ! Votre réponse (Absent) a bien été enregistrée.";
