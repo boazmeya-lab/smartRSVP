@@ -6,15 +6,15 @@
   <title>RSVP - Smartevent</title>
   <style>
     :root {
-      --bg-card: #ffffff;
+      --bg-card: rgba(0, 0, 0, 0.45); /* Fond transparent pour voir la photo */
       --navy-accent: #1F3A5F;
       --navy-hover: #142742;
       --gold-accent: #D4AF37;
       --gold-hover: #b89628;
-      --text-main: #222222;
-      --text-muted: #666666;
-      --border-color: #e0e0e0;
-      --input-bg: #f9f9f9;
+      --text-main: #ffffff; /* Texte en blanc pour contraster avec la photo */
+      --text-muted: #e0e0e0;
+      --border-color: rgba(255, 255, 255, 0.25);
+      --input-bg: rgba(0, 0, 0, 0.5);
     }
 
     * {
@@ -25,8 +25,8 @@
     }
 
     body {
-      /* Photo de mariage en arrière-plan avec voile sombre pour faire ressortir la carte */
-      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), 
+      /* Photo de mariage en arrière-plan */
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
                   url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
       color: var(--text-main);
       display: flex;
@@ -44,13 +44,15 @@
       max-width: 680px;
       display: flex;
       overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px); /* Effet verre dépoli */
+      -webkit-backdrop-filter: blur(10px);
     }
 
     /* Bande Motif Afro */
     .afro-sidebar {
       width: 110px;
-      background-color: #1a1a1a;
+      background-color: rgba(20, 20, 20, 0.7);
       position: relative;
       display: flex;
       flex-direction: column;
@@ -84,12 +86,13 @@
     }
 
     .header h1 {
-      color: var(--navy-accent);
+      color: var(--gold-accent);
       font-size: 22px;
       letter-spacing: 1.5px;
       margin-bottom: 6px;
       text-transform: uppercase;
       font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
     }
 
     .header p {
@@ -109,6 +112,7 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     }
 
     input, select {
@@ -123,9 +127,14 @@
       transition: border-color 0.3s, box-shadow 0.3s;
     }
 
+    select option {
+      background-color: #1a1a1a;
+      color: #ffffff;
+    }
+
     input:focus, select:focus {
       border-color: var(--gold-accent);
-      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
     }
 
     .hidden {
@@ -138,7 +147,7 @@
       background-color: var(--navy-accent);
       color: #ffffff;
       font-weight: bold;
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 8px;
       font-size: 15px;
       cursor: pointer;
@@ -159,21 +168,21 @@
       font-weight: 600;
     }
 
-    .success { color: #15803d; }
-    .error { color: #b91c1c; }
+    .success { color: #4ade80; }
+    .error { color: #f87171; }
 
     /* Carte du Pass QR Code */
     .pass-container {
       text-align: center;
       padding: 20px;
-      background-color: #fcfbf7;
+      background-color: rgba(0, 0, 0, 0.6);
       border: 1px solid var(--gold-accent);
       border-radius: 12px;
       margin-top: 10px;
     }
 
     .pass-container h3 {
-      color: var(--navy-accent);
+      color: var(--gold-accent);
       margin-bottom: 8px;
       font-size: 18px;
     }
@@ -201,7 +210,7 @@
 
     .pass-details {
       text-align: left;
-      background-color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.1);
       border: 1px solid var(--border-color);
       padding: 14px;
       border-radius: 8px;
