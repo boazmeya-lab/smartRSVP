@@ -6,12 +6,12 @@
   <title>RSVP - Smartevent</title>
   <style>
     :root {
-      --bg-card: rgba(0, 0, 0, 0.45); /* Fond transparent pour voir la photo */
+      --bg-card: rgba(0, 0, 0, 0.45);
       --navy-accent: #1F3A5F;
       --navy-hover: #142742;
       --gold-accent: #D4AF37;
       --gold-hover: #b89628;
-      --text-main: #ffffff; /* Texte en blanc pour contraster avec la photo */
+      --text-main: #ffffff;
       --text-muted: #e0e0e0;
       --border-color: rgba(255, 255, 255, 0.25);
       --input-bg: rgba(0, 0, 0, 0.5);
@@ -25,7 +25,6 @@
     }
 
     body {
-      /* Photo de mariage en arrière-plan */
       background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
                   url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
       color: var(--text-main);
@@ -45,11 +44,10 @@
       display: flex;
       overflow: hidden;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(10px); /* Effet verre dépoli */
+      backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
 
-    /* Bande Motif Afro */
     .afro-sidebar {
       width: 110px;
       background-color: rgba(20, 20, 20, 0.7);
@@ -171,7 +169,6 @@
     .success { color: #4ade80; }
     .error { color: #f87171; }
 
-    /* Carte du Pass QR Code */
     .pass-container {
       text-align: center;
       padding: 20px;
@@ -246,42 +243,34 @@
 
   <div class="card-container">
     
-    <!-- Motif Afro latéral -->
     <div class="afro-sidebar">
       <div class="pattern-strip"></div>
     </div>
 
-    <!-- Contenu -->
     <div class="form-content">
       
-      <!-- ENTÊTE -->
       <div class="header">
         <h1>Confirmation RSVP</h1>
         <p>Veuillez valider votre présence ci-dessous</p>
       </div>
 
-      <!-- FORMULAIRE RSVP -->
       <form id="rsvpForm">
         
-        <!-- Nom complet -->
         <div class="form-group">
           <label for="nom">Nom Complet *</label>
           <input type="text" id="nom" placeholder="Ex: Jean Kabangu" required>
         </div>
 
-        <!-- Téléphone -->
         <div class="form-group">
           <label for="telephone">Numéro WhatsApp / Téléphone *</label>
           <input type="tel" id="telephone" placeholder="Ex: +243..." required>
         </div>
 
-        <!-- Email -->
         <div class="form-group">
           <label for="email">Adresse Email</label>
           <input type="email" id="email" placeholder="Ex: exemple@mail.com">
         </div>
 
-        <!-- PRÉSENCE -->
         <div class="form-group">
           <label for="presence">Serez-vous présent(e) ? *</label>
           <select id="presence" onchange="togglePresenceFields(this.value)" required>
@@ -290,10 +279,8 @@
           </select>
         </div>
 
-        <!-- SECTION OPTIONS (Champs masqués si Absent) -->
         <div id="options_presence">
           
-          <!-- Affiliation -->
           <div class="form-group">
             <label for="affiliation">Vous êtes du côté de : *</label>
             <select id="affiliation">
@@ -303,9 +290,8 @@
             </select>
           </div>
 
-          <!-- Boisson -->
           <div class="form-group">
-            <label for="boisson">Préférence de Boisson *</label>
+            <label for="boisson">Votre Préférence de Boisson *</label>
             <select id="boisson">
               <option value="Sucré / Jus">Sucré / Jus</option>
               <option value="Bière">Bière</option>
@@ -314,7 +300,6 @@
             </select>
           </div>
 
-          <!-- Option Accompagnant -->
           <div class="form-group">
             <label for="avec_accompagnant">Venez-vous accompagné(e) ? *</label>
             <select id="avec_accompagnant" onchange="toggleAccompagnant(this.value)">
@@ -323,10 +308,23 @@
             </select>
           </div>
 
-          <!-- Nom Accompagnant -->
-          <div class="form-group hidden" id="champ_accompagnant">
-            <label for="nom_accompagnant">Nom complet de l'accompagnant(e) *</label>
-            <input type="text" id="nom_accompagnant" placeholder="Ex: Marie Kabangu">
+          <!-- SECTION ACCOMPAGNANT (Masquée par défaut) -->
+          <div class="hidden" id="champ_accompagnant">
+            <div class="form-group">
+              <label for="nom_accompagnant">Nom complet de l'accompagnant(e) *</label>
+              <input type="text" id="nom_accompagnant" placeholder="Ex: Marie Kabangu">
+            </div>
+
+            <!-- NOUVELLE SECTION : Boisson de l'accompagnant -->
+            <div class="form-group">
+              <label for="boisson_accompagnant">Boisson de l'accompagnant(e) *</label>
+              <select id="boisson_accompagnant">
+                <option value="Sucré / Jus">Sucré / Jus</option>
+                <option value="Bière">Bière</option>
+                <option value="Vin / Champagne">Vin / Champagne</option>
+                <option value="Eau Minérale">Eau Minérale</option>
+              </select>
+            </div>
           </div>
 
         </div>
@@ -337,9 +335,8 @@
 
       </form>
 
-      <!-- AFFICHAGE DU PASS + QR CODE (Masqué au début) -->
       <div id="passSection" class="pass-container hidden">
-        <h3>🎉 Pass d'accès validé !</h3>
+        <h3> Pass d'accès validé !</h3>
         <p class="subtitle">Veuillez enregistrer ou capturer ce QR Code pour l'entrée.</p>
 
         <div class="qr-box">
@@ -351,6 +348,7 @@
           <p><strong>Table :</strong> <span id="passTable" style="color: var(--gold-accent); font-weight: bold;"></span></p>
           <p><strong>Code Ticket :</strong> <span id="passTicket"></span></p>
           <p id="passAccompagnantRow" class="hidden"><strong>Accompagnant :</strong> <span id="passAccompagnant"></span></p>
+          <p id="passBoissonAccompagnantRow" class="hidden"><strong>Boisson Accompagnant :</strong> <span id="passBoissonAccompagnant"></span></p>
         </div>
       </div>
 
@@ -359,6 +357,8 @@
   </div>
 
   <script>
+    const VOTRE_NUMERO_WHATSAPP = "243829744248"; // Remplacez par votre numéro (ex: 243812345678)
+
     const urlParams = new URLSearchParams(window.location.search);
     const tableAttribuee = urlParams.get('table') || 'Non attribuée';
 
@@ -373,15 +373,15 @@
 
     function toggleAccompagnant(valeur) {
       const champAccompagnant = document.getElementById("champ_accompagnant");
-      const inputNomAccompagnant = document.getElementById("nom_accompagnant");
+      const inputNom = document.getElementById("nom_accompagnant");
 
       if (valeur === "oui") {
         champAccompagnant.classList.remove("hidden");
-        inputNomAccompagnant.setAttribute("required", "required");
+        inputNom.setAttribute("required", "required");
       } else {
         champAccompagnant.classList.add("hidden");
-        inputNomAccompagnant.removeAttribute("required");
-        inputNomAccompagnant.value = "";
+        inputNom.removeAttribute("required");
+        inputNom.value = "";
       }
     }
 
@@ -400,9 +400,16 @@
       const estPresent = presenceRaw.toLowerCase().includes("oui") || presenceRaw.toLowerCase().includes("présent");
       const presenceFormatted = estPresent ? "Oui" : "Non";
 
-      const avecAccompagnant = document.getElementById("avec_accompagnant").value;
+      const avecAccompagnant = estPresent ? document.getElementById("avec_accompagnant").value : "non";
       const nomComplet = document.getElementById("nom").value;
-      const nomAccompagnant = document.getElementById("nom_accompagnant").value;
+      const emailInput = document.getElementById("email").value || "Non renseigné";
+      
+      // Récupération sécurisée des données de l'accompagnant (évite les erreurs null)
+      const inputNomAcc = document.getElementById("nom_accompagnant");
+      const selectBoissonAcc = document.getElementById("boisson_accompagnant");
+      
+      const nomAccompagnant = (estPresent && avecAccompagnant === "oui" && inputNomAcc) ? inputNomAcc.value : "";
+      const boissonAccompagnant = (estPresent && avecAccompagnant === "oui" && selectBoissonAcc) ? selectBoissonAcc.value : "N/A";
 
       const ticketId = estPresent ? ("TICK-" + Math.floor(100000 + Math.random() * 900000)) : "AUCUN";
 
@@ -410,12 +417,13 @@
         ticket_id: ticketId,
         nom_complet: nomComplet,
         telephone: document.getElementById("telephone").value,
-        email: document.getElementById("email").value,
+        email: emailInput,
         presence: presenceFormatted,
         affiliation: estPresent ? document.getElementById("affiliation").value : "N/A",
         boisson: estPresent ? document.getElementById("boisson").value : "N/A",
-        avec_accompagnant: estPresent ? avecAccompagnant : "non",
-        nom_accompagnant: (estPresent && avecAccompagnant === "oui") ? nomAccompagnant : "",
+        avec_accompagnant: avecAccompagnant,
+        nom_accompagnant: nomAccompagnant,
+        boisson_accompagnant: boissonAccompagnant,
         table: estPresent ? tableAttribuee : "N/A",
         date_soumission: new Date().toISOString()
       };
@@ -438,12 +446,54 @@
             if (avecAccompagnant === "oui" && nomAccompagnant) {
               document.getElementById("passAccompagnant").innerText = nomAccompagnant;
               document.getElementById("passAccompagnantRow").classList.remove("hidden");
+
+              document.getElementById("passBoissonAccompagnant").innerText = boissonAccompagnant;
+              document.getElementById("passBoissonAccompagnantRow").classList.remove("hidden");
             }
 
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${ticketId}`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${ticketId}`;
             document.getElementById("qrCodeImg").src = qrUrl;
 
-            document.getElementById("passSection").classList.remove("hidden");
+            // Message WhatsApp incluant l'accompagnant et l'email
+            let messageTexte = `Bonjour ! Je viens de valider mon RSVP pour ${nomComplet}.\n` +
+                               `🎟 Ticket : ${ticketId}\n` +
+                               `📍 Table : ${tableAttribuee}\n`;
+
+            if (avecAccompagnant === "oui" && nomAccompagnant) {
+              messageTexte += `👥 Accompagnant(e) : ${nomAccompagnant} (${boissonAccompagnant})\n`;
+            }
+
+            messageTexte += `📧 Email : ${emailInput} (Pass également envoyé par mail)\n` +
+                           `🔗 Mon QR Code : ${qrUrl}`;
+
+            const waUrl = `https://wa.me/${VOTRE_NUMERO_WHATSAPP}?text=${encodeURIComponent(messageTexte)}`;
+
+            const passSection = document.getElementById("passSection");
+            const oldBtn = document.getElementById("btnWhatsappPass");
+            if (oldBtn) oldBtn.remove();
+
+            const btnWa = document.createElement("a");
+            btnWa.id = "btnWhatsappPass";
+            btnWa.href = waUrl;
+            btnWa.target = "_blank";
+            btnWa.style.cssText = `
+              display: block;
+              margin-top: 15px;
+              padding: 12px;
+              background-color: #25D366;
+              color: #ffffff;
+              font-weight: bold;
+              text-decoration: none;
+              border-radius: 8px;
+              text-align: center;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            `;
+            btnWa.innerText = "📲 Recevoir mon Pass sur WhatsApp";
+            passSection.appendChild(btnWa);
+
+            passSection.classList.remove("hidden");
+
           } else {
             statusMsg.innerText = "📩 Merci ! Votre réponse (Absent) a bien été enregistrée.";
             statusMsg.classList.add("success");
